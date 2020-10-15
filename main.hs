@@ -1,9 +1,12 @@
+import System.IO
 
-validPosition totalRows totalColumns targetRow targetColumn = 
-    targetRow >= 0 &&
-    targetRow < totalRows &&
-    targetColumn >= 0 &&
-    targetColumn < totalColumns
+validPosition board position = 
+    row >= 0 &&
+    row < length board &&
+    column >= 0 &&
+    column < length (board !! row)
+    where (row, column) = position
 
 main = do
-    print (validPosition 10 10 (-10) (-8))
+    let z = explore [[2, 3, 4, 5], [1, 2, 3, 4]] (10, 10) (10, 10)
+    print (z)
