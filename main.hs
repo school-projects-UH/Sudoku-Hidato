@@ -1,4 +1,5 @@
 import System.IO
+import Printm
 
 validPosition board position = 
     row >= 0 &&
@@ -8,5 +9,5 @@ validPosition board position =
     where (row, column) = position
 
 main = do
-    let z = explore [[2, 3, 4, 5], [1, 2, 3, 4]] (10, 10) (10, 10)
-    print (z)
+    let matrix = [[1,2,3], [9,50,101]]
+    printm matrix
