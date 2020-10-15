@@ -9,10 +9,12 @@ validPosition board position =
     column < length (board !! row)
     where (row, column) = position
 
+explore :: [[Int]] -> (Int,Int) -> (Int,Int) -> (Bool, [[Int]])
 explore board position targetPosition
     | position == targetPosition = (True, board)
+    | not(validPosition board position) = (False, board)
 
 
 main = do
-    let matrix = [[1,2,3], [9,50,101]]
-    printm matrix
+    let z = explore [[1, 2, 3]] (-1, 10) (10, 10)
+    print z
