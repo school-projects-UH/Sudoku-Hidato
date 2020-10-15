@@ -16,10 +16,7 @@ formatList (value:list) = do
 
 format :: [[Int]] -> [String]
 format  [] = []
-format  (row:matrix) = do
-    let rowf = formatList row 
-    let matrixf = format matrix
-    (rowf:matrixf)
+format  (row:matrix) = formatList row:format matrix
 
 matrixToString :: [[Int]] -> String
 matrixToString (matrix) = unlines (format matrix)
