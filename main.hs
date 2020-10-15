@@ -21,7 +21,7 @@ replace (x:xs) n a =
 setm [] _ = []
 setm (r: matrix) (x, y, v)
     | x > 0 = r: setm matrix (x-1, y, v)
-    | x == 0 = (replace r (y,v)):matrix
+    | x == 0 = (replace r y v):matrix
     | otherwise = r:matrix
 
 main = do
