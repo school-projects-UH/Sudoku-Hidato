@@ -44,10 +44,11 @@ solve matrix start end empty
         else head validResults
     | otherwise = (False, matrix)
 
-    where nextCells = validPaths matrix start empty
-        results =  map (\p -> solve (setm matrix p v)  p end empty) nextCells
-        validResults = filter (\(r, board) -> r == True) results
-        where v = (get matrix start) + 1
+    where 
+        nextCells = validPaths matrix start empty
+        results = map (\p -> solve (setm matrix p v)  p end empty) nextCells
+        validResults = filter (\(r, _) -> r == True) results
+        v = (get matrix start) + 1
 
 main = do
     let matrix = [[3, 0, 1]]
