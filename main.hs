@@ -12,10 +12,12 @@ validPosition board position =
     column < length (board !! row)
     where (row, column) = position
 
-get board position 
+get board position
     | validPosition board position = (board !! x !! y)
-    | otherwise = -1 
+    | otherwise = -1
     where (x, y) = position
+
+getDimensions matrix = (length matrix, maximum (map(\list -> length list) matrix))
 
 replace [] _ _= []
 replace (_:xs) 0 a = a:xs
@@ -24,14 +26,35 @@ replace (x:xs) n a =
     then x:xs
     else x: replace xs (n-1) a
 
-setm :: (Num a, Num t1, Ord a, Ord t1) => [[t2]] -> (a, t1, t2) -> [[t2]]
-setm [] _ = []
-setm (r: matrix) (x, y, v)
-    | x > 0 = r: setm matrix (x-1, y, v)
+setm [] _ _  = []
+setm (r: matrix) pos v
+    | x > 0 = r: setm matrix (x-1, y) v
     | x == 0 = (replace r y v):matrix
     | otherwise = r:matrix
+    where (x, y) = pos
+
+adj matrix pos = [(x+a, y+b) | x <- [-1, 0, 1], y <- [-1, 0, 1], x/=0 || y/=0 , x+a < r, x+a >=0, y+b < c, y+b >= 0] where ((a, b), (r, c)) = (pos, getDimensions matrix)
+validPaths matrix pos empty = filter (\p -> ((get matrix p) == ((get matrix pos) + 1 ) || get matrix p == empty)) (adj matrix pos)
+
+solve matrix start end empty
+    | start == end = (True, matrix)
+    | not (null nextCells) = 
+        if null validResults
+            then (False, matrix)
+        else head validResults
+    | otherwise = (False, matrix)
+
+    where nextCells = validPaths matrix start empty
+        results =  map (\p -> solve (setm matrix p v)  p end empty) nextCells
+        validResults = filter (\(r, board) -> r == True) results
+        where v = (get matrix start) + 1
 
 main = do
-    let m1 = [[60, 0, 0], [0, 50, 60], [0, 0, 0], [0, 0, 70]]
-    let fm1 = fillm m1 [1,2,3,4,5,6,7,8] 0
-    printm fm1
+    let matrix = [[3, 0, 1]]
+    let    start = (0, 2)
+    let    end = (0, 0)
+    let    empty = 0
+
+    print (solve matrix start end empty)
+
+
