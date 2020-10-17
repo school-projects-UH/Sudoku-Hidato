@@ -17,14 +17,13 @@ generateRand top = do
 
 generate :: IO ([[Int]], (Int, Int), (Int, Int))
 generate = do
-    (br1:_) <- sample 1
-    let rows = 5 + (mod br1 26) -- random rows number between [5, 25]
+    rnd1 <- generateRand 11
+    let rows = 5 + rnd1 -- random rows number between [5, 15]
 
-    (br2:_) <- sample 1
-    let cols = 5 + (mod br2 26) -- random cols number between [5, 25]
+    rnd2 <- generateRand 11
+    let cols = 5 + rnd2 -- random cols number between [5, 15]
 
     let m = buildMatrix rows cols
-    
     (solutionMatrix, start, end) <- findValidStart m $ getAllPositions rows cols
     
     let freePositions = [(x, y) | x <- [0..(rows-1)], y <- [0..(cols-1)], (x, y) /= start && (x, y) /= end]
@@ -33,9 +32,9 @@ generate = do
     hidato <- (removeFromMatrix solutionMatrix freePositions k)
     return (hidato, start, end)
 
+findValidStart :: [[Int]] -> [(Int, Int)] -> IO ([[Int]], (Int, Int), (Int, Int))
 findValidStart matrix freeStarts = do
-    (rnd:_) <- sample 1
-    let idx = mod rnd $ length freeStarts
+    idx <- generateRand $ length freeStarts
     let start = freeStarts !! idx
     let (result, solutionMatrix, end) = findPath (setm matrix start 1) start
     let updatedFreeStarts = take idx freeStarts ++ drop (1 + idx) freeStarts
@@ -53,19 +52,17 @@ findPath matrix currPos
             then (False, matrix, currPos)
         else head validResults
     | otherwise = (False, matrix, currPos)
-
     where
         (tc, tr) = getDimensions matrix
         nextCells = validPaths matrix currPos 0
         results = map (\p -> findPath (setm matrix p v)  p) nextCells
-        validResults = filter (\(r, _, _) -> r == True) results
+        validResults = filter (\(isValid, _, _) -> isValid) results
         v = (get matrix currPos) + 1
    
 removeFromMatrix :: (Eq t, Num t, Ord a, Ord t1, Num a, Num t1, Num t2) => [[t2]] -> [(a, t1)] -> t -> IO [[t2]]
 removeFromMatrix matrix _ 0 = return matrix
 removeFromMatrix matrix freePositions k = do
-    (rnd:_) <- sample 1
-    let x = mod rnd $ length freePositions
+    x <- generateRand $ length freePositions
     let updatedMatrix = setm matrix (freePositions !! x) 0
     let updatedFreePos = take x freePositions ++ drop (1 + x) freePositions
     removeFromMatrix updatedMatrix updatedFreePos (k-1)

@@ -43,7 +43,6 @@ solve matrix start end empty
             then (False, matrix)
         else head validResults
     | otherwise = (False, matrix)
-
     where 
         nextCells = validPaths matrix start empty
         results = map (\p -> solve (setm matrix p v)  p end empty) nextCells
