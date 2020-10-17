@@ -1,11 +1,5 @@
-import System.IO
 import Printm
-import Fillm
-import Tests
-import Data.Foldable (toList)
-import Data.Sequence (fromList)
 import Solver
-
 
 uhSampleBoard =
         [ [00, 33, 35, 00, 00, -1, -1, -1]
@@ -22,12 +16,6 @@ uhSampleMinPos = (4, 6)
 uhSampleMaxPos = (3, 4)
 
 main = do
-    -- runSamples [(uhSampleBoard, uhSampleMinPos, uhSampleMaxPos, 0)]
-    -- let (m, s, e, empty) = head tests
-    -- let (result, board) = solve m s e empty
-    -- print result
-    -- printm board
-
     let (result, board) = solve uhSampleBoard uhSampleMinPos uhSampleMaxPos 00
     print result
     printm board
