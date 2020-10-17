@@ -31,8 +31,12 @@ setm (r: matrix) pos v
     where (x, y) = pos
 
 adj matrix pos = [(x+a, y+b) | x <- [-1, 0, 1], y <- [-1, 0, 1], x/=0 || y/=0 , x+a < r, x+a >=0, y+b < c, y+b >= 0] where ((a, b), (r, c)) = (pos, getDimensions matrix)
-validPaths matrix pos empty = filter (\p -> ((get matrix p) == ((get matrix pos) + 1 ) || get matrix p == empty)) (adj matrix pos)
+validPaths matrix pos empty
+    | not(null l1) = l1
+    | otherwise = filter (\p -> ((get matrix p) == empty)) (adj matrix pos)
+    where l1 = filter (\p -> ((get matrix p) == ((get matrix pos) + 1))) (adj matrix pos)
 
+solve :: [[Int]] -> (Int, Int) -> (Int, Int) -> Int -> (Bool, [[Int]])
 solve matrix start end empty
     | start == end = (True, matrix)
     | not (null nextCells) = 
