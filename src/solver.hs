@@ -1,5 +1,4 @@
 module Solver (solve, setm, getDimensions, get, validPaths) where
-import Printm
 
 validPosition :: [[Int]] -> (Int, Int) -> Bool
 validPosition board position =

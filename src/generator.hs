@@ -1,35 +1,30 @@
--- module Generator (generate) where
-
-import System.Random
-import Printm
-import Solver
+import System.Random ( newStdGen, Random(randoms) )
+import Printm ( printm )
+import Solver ( get, getDimensions, setm, validPaths, solve )
 
 sample :: Int -> IO [Int]
 sample n = do
   gen <- newStdGen
   return $ take n $ randoms gen
 
+buildMatrix :: Num a => Int -> Int -> [[a]]
 buildMatrix rows cols = take rows $ repeat $ take cols $ repeat 0
 
 generateRand :: Int -> IO Int
 generateRand top = do
         (br:_) <- sample 1
-        -- return (mod br top)
         return (mod br top)
 
--- generate :: Int -> [[Int]]
+generate :: IO ([[Int]], (Int, Int), (Int, Int))
 generate = do
     (br1:_) <- sample 1
     let rows = 5 + (mod br1 26) -- random rows number between [5, 25]
-    -- let rows = 100
 
     (br2:_) <- sample 1
-    let cols = 5 + (mod br2 26) --  random cols number between [5, 25]
-    -- let cols = 100
+    let cols = 5 + (mod br2 26) -- random cols number between [5, 25]
 
     let m = buildMatrix rows cols
     
-    -- (solutionMatrix, start, end) <- pickOneSolution m $ pickAllValidSolutions m
     (solutionMatrix, start, end) <- findValidStart m $ getAllPositions rows cols
     
     let freePositions = [(x, y) | x <- [0..(rows-1)], y <- [0..(cols-1)], (x, y) /= start && (x, y) /= end]
@@ -37,7 +32,6 @@ generate = do
     let k = total - div total 3
     hidato <- (removeFromMatrix solutionMatrix freePositions k)
     return (hidato, start, end)
-    -- return solutionMatrix
 
 findValidStart matrix freeStarts = do
     (rnd:_) <- sample 1
@@ -48,13 +42,10 @@ findValidStart matrix freeStarts = do
     if result then return (solutionMatrix, start, end)
     else findValidStart matrix updatedFreeStarts
 
--- pickAllPositions :: (Num a, Num b, Enum a, Enum b, Ord a, Eq b) => a -> b -> [((a, b), (a, b))]
-pickAllPositions :: (Num a, Num b, Enum a, Enum b, Ord a, Ord b) => a -> b -> [((a, b), (a, b))]
-pickAllPositions totalRows totalColumns = [((x, y), (z, w)) | x <- [0..(totalRows-1)], z <- [0..(totalRows-1)] , w <- [0..(totalColumns-1)], y <- [0..(totalColumns-1)], x < z || x == z && y < w, (x, y) /= (z, w)]
-
+getAllPositions :: (Num a, Num b, Enum a, Enum b) => a -> b -> [(a, b)]
 getAllPositions totalRows totalColumns = [(x, y)| x <- [0..(totalRows-1)], y <- [0..(totalColumns-1)]]
 
--- findPath :: [[Int]] -> (Int, Int) -> (Int, Int) -> Int -> (Bool, [[Int]])
+findPath :: [[Int]] -> (Int, Int) -> (Bool, [[Int]], (Int, Int))
 findPath matrix currPos
     | (get matrix currPos) == (tr * tc) = (True, matrix, currPos)
     | not (null nextCells) = 
@@ -69,17 +60,6 @@ findPath matrix currPos
         results = map (\p -> findPath (setm matrix p v)  p) nextCells
         validResults = filter (\(r, _, _) -> r == True) results
         v = (get matrix currPos) + 1
-
-pickAllValidSolutions :: [[Int]] -> [((Int, Int), (Int, Int))]
-pickAllValidSolutions matrix = filter (\(start, end) -> fst (solve (setm (setm matrix start 1) end (tr*tc)) start end 0) == True) (pickAllPositions tr tc) 
-                                where (tr, tc) = getDimensions matrix
-
-
-pickOneSolution matrix solutions = do
-    (rnd:_) <- sample 1    
-    let x = mod rnd (length solutions)
-    let (start, end) = solutions !! x
-    return  (snd  (solve (setm (setm matrix start 1) end (tr*tc)) start end 0), start, end) where (tr, tc) = getDimensions matrix
    
 removeFromMatrix :: (Eq t, Num t, Ord a, Ord t1, Num a, Num t1, Num t2) => [[t2]] -> [(a, t1)] -> t -> IO [[t2]]
 removeFromMatrix matrix _ 0 = return matrix
@@ -92,19 +72,10 @@ removeFromMatrix matrix freePositions k = do
 
 main :: IO ()
 main = do
-    -- (br1:_) <- sample 1
-    -- let rows = 5 + (mod br1 26) -- random rows number between [5, 25]
-    
-    -- (br2:_) <- sample 1
-    -- let cols = 5 + (mod br2 26) --  random cols number between [5, 25]
-    -- generate 0
-    -- let l = pickAllPositions 25 25
-    -- print $ length l
     (hidato, start, end) <- generate
 
-    -- let m = [[0, 0], [0, 0]]
-    -- print $ pickAllValidSolutions m
     printm  hidato
-    let (_, solution) = solve hidato start end 0
     putStr "\n"
+    
+    let (_, solution) = solve hidato start end 0
     printm solution
