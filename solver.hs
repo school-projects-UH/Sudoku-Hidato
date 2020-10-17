@@ -1,4 +1,4 @@
-module Solver (solve, setm, getDimensions) where
+module Solver (solve, setm, getDimensions, get, validPaths) where
 import Printm
 
 validPosition :: [[Int]] -> (Int, Int) -> Bool
