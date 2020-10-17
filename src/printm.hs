@@ -21,4 +21,5 @@ format  (row:matrix) = formatList row:format matrix
 matrixToString :: [[Int]] -> String
 matrixToString (matrix) = unlines (format matrix)
 
+printm :: [[Int]] -> IO ()
 printm matrix = putStr (matrixToString matrix)
