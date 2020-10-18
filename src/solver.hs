@@ -1,5 +1,4 @@
 module Solver (solve, setm, getDimensions, get, validPaths) where
-import Printm
 
 validPosition :: [[Int]] -> (Int, Int) -> Bool
 validPosition board position =
@@ -44,20 +43,8 @@ solve matrix start end empty
             then (False, matrix)
         else head validResults
     | otherwise = (False, matrix)
-
     where 
         nextCells = validPaths matrix start empty
         results = map (\p -> solve (setm matrix p v)  p end empty) nextCells
         validResults = filter (\(r, _) -> r == True) results
         v = (get matrix start) + 1
-
-runSamples samples = do
-    let runs = map (\(m, s, e, empty) -> solve m s e empty) samples
-    map (\run -> printRun run) runs
-
-printRun (result, board)
-    | result = do
-        print result
-        printm board
-    | otherwise =
-        print result
