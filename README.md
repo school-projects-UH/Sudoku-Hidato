@@ -1,6 +1,6 @@
 # Sudoku-Hidato
 Sudoku Hidato solved in Haskell, class project for 4th Degree course of Computer Science in Havana University, subject: "Programación Declarativa"\
-For more detailed information see [Project Specifications]() (Spanish) and [Final Report]() (Spanish)
+For more detailed information see [Project Specifications](https://github.com/school-projects-UH/Sudoku-Hidato/blob/master/docs/Project%20Specifications.pdf) (Spanish) and [Final Report](https://github.com/school-projects-UH/Sudoku-Hidato/blob/master/docs/Final%20Report.pdf) (Spanish)
 
 Programmed and tested in Windows 10
 Haskell compilator ghc 8.10.2
