@@ -17,11 +17,11 @@ generateRand top = do
 
 generate :: IO ([[Int]], (Int, Int), (Int, Int))
 generate = do
-    rnd1 <- generateRand 11
-    let rows = 5 + rnd1 -- random rows number between [5, 15]
+    rnd1 <- generateRand 8
+    let rows = 3 + rnd1 -- random rows number between [3, 10]
 
-    rnd2 <- generateRand 11
-    let cols = 5 + rnd2 -- random cols number between [5, 15]
+    rnd2 <- generateRand 8
+    let cols = 3 + rnd2 -- random cols number between [3, 10]
 
     let m = buildMatrix rows cols
     (solutionMatrix, start, end) <- findValidStart m $ getAllPositions rows cols
@@ -41,8 +41,8 @@ findValidStart matrix freeStarts = do
     if result then return (solutionMatrix, start, end)
     else findValidStart matrix updatedFreeStarts
 
-getAllPositions :: (Num a, Num b, Enum a, Enum b) => a -> b -> [(a, b)]
-getAllPositions totalRows totalColumns = [(x, y)| x <- [0..(totalRows-1)], y <- [0..(totalColumns-1)]]
+getAllPositions :: (Num a, Num b, Enum a, Enum b, Eq a) => a -> b -> [(a, b)]
+getAllPositions totalRows totalColumns = [(x, y)| x <- [0..(totalRows-1)], y <- [0..(totalColumns-1)], x /= 1]
 
 findPath :: [[Int]] -> (Int, Int) -> (Bool, [[Int]], (Int, Int))
 findPath matrix currPos
@@ -71,8 +71,10 @@ main :: IO ()
 main = do
     (hidato, start, end) <- generate
 
+    print "Generated Hidato"
     printm  hidato
     putStr "\n"
     
+    print "Solution"
     let (_, solution) = solve hidato start end 0
     printm solution
