@@ -37,7 +37,7 @@ tester.hs computes the solution the sample from the project specifications
 0-1 0-1 0-1 0-1 0-1 0-1 005 004
 ```
 
-The cells are formatted to to size 3 for better display experience:\ 
+The cells are formatted to to size 3 for better display experience:
 - -1 cells stands for black cells or holes
 - 0 cells stands for white cells or empty spaces 
 
