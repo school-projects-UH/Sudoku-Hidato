@@ -1,5 +1,4 @@
-FOR /L %%A IN (1,1,100) DO (
-    ghc generator.hs
+ghc generator.hs
+FOR /L %%A IN (1,1,10) DO (
     generator.exe
 )
-exit
